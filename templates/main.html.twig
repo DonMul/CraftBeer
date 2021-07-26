@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+{% import _self as macros %}
+
+{% block body %}
+    <h3 class="text-center">Onze bierselectie</h3>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Filters</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <label for="filterName">Naam</label>
+                <input class="form-control me-2 js-beer-filter" type="text" id="filterName" name="filterName">
+
+                <label for="filterBrand">Merk</label>
+                <select class="form-control me-2 js-beer-filter" id="filterBrand" name="filterBrand">
+                    <option value="">(Geen merk)</option>
+                    {% for brand in brands %}
+                    <option value="{{ brand }}">{{ brand }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="filterCategory">Type</label>
+                <select multiple class="form-control me-2 js-beer-filter" id="filterCategory" name="filterCategory">
+                    <option value="">(Geen catgegorie)</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="filterAbvMin">ABV% vanaf</label>
+                <input class="form-control me-2 js-beer-filter" type="number" step="0.1" id="filterAbvMin" name="filterAbvMin">
+
+                <label for="filterAbvMax">ABV% tot</label>
+                <input class="form-control me-2 js-beer-filter" type="number" step="0.1" id="filterAbvMax" name="filterAbvMax">
+
+                <label for="filterPriceMin">Prijs vanaf</label>
+                <input class="form-control me-2 js-beer-filter" type="number" id="filterPriceMin" name="filterPriceMin">
+
+                <label for="filterPriceMax">Prijs tot</label>
+                <input class="form-control me-2 js-beer-filter" type="number" id="filterPriceMax" name="filterPriceMax">
+
+                <hr/>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn btn-danger">
+                            Zoeken
+                        </button>
+                    </div>
+                    <div class="col text-end">
+                        <button type="submit" class="btn btn-danger" id="clearFilters">
+                            Wissen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script>
+        $(document).ready(function(){
+            $('#clearFilters').click(function(){
+                $('.js-beer-filter').val('');
+                $('.beer-row').each(function(){
+                    $(this).removeClass('hidden');
+                });
+            });
+            $('.js-beer-filter').change(function(){
+                var name = $('#filterName').val();
+                var brand = $('#filterBrand').val();
+                var abvMin = parseFloat($('#filterAbvMin').val());
+                var abvMax = parseFloat($('#filterAbvMax').val());
+                var priceMin = parseFloat($('#filterPriceMin').val());
+                var priceMax = parseFloat($('#filterPriceMax').val());
+                var categories = $('#filterCategory').val();
+
+                var shownRows = 0;
+                $('.beer-row').each(function(){
+                    var rowName = $(this).attr('data-name');
+                    var rowBrand = $(this).attr('data-brand');
+                    var rowAbv = parseFloat($(this).attr('data-abv'));
+                    var rowPrice = parseFloat($(this).attr('data-price'));
+                    var rowCategories = $(this).attr('data-categories').split(',').filter(function(el){
+                        return el != '';
+                    });
+
+                    var shouldShow = true;
+                    if (
+                        (name != '' && rowName.includes(name) == false) ||
+                        (brand != '' && rowBrand.includes(brand) == false) ||
+                        (abvMin != NaN && abvMin > rowAbv) ||
+                        (abvMax != NaN && abvMax < rowAbv) ||
+                        (priceMin != NaN && priceMin > rowPrice) ||
+                        (priceMax != NaN && priceMax < rowPrice)
+                    ) {
+                        shouldShow = false;
+                    }
+
+                    for (var i in categories) {
+                        if (rowCategories.includes(categories[i]) == false) {
+                            shouldShow = false;
+                        }
+                    }
+
+                    if (shouldShow === true) {
+                        shownRows++;
+                        $(this).removeClass('hidden');
+                    } else {
+                        $(this).addClass('hidden');
+                    }
+                });
+
+                if (shownRows > 0) {
+                    $('#noneFound').addClass('hidden')
+                } else {
+                    $('#noneFound').removeClass('hidden')
+                }
+            });
+        });
+    </script>
+
+    {% if beers|length <= 0 %}
+        <div class="alert alert-warning" role="alert">
+            Er zijn geen biertjes toegevoegd
+        </div>
+    {% endif %}
+
+    {% for beer in beers %}
+        {{ macros.beer(beer) }}
+    {% endfor %}
+    <div class="alert alert-warning hidden" role="alert" id="noneFound">
+        Er zijn geen biertjes gevonden met die zoekcriteria
+    </div>
+{% endblock %}
+
+{% macro beer(beer) %}
+    <div class="row beer-row" data-brand="{{ beer.brand.name }}" data-name="{{ beer.name }}" data-abv="{{ beer.abv }}" data-price="{{ beer.price }}" data-categories="{% for category in beer.categories %}{{ category.id }},{% endfor %}">
+        <div class="row">
+            <div class="col">
+                <h5 class="beer-row__name">{{ beer.name }}</h5>
+                <small class="beer-row__brand">{{ beer.brand.name }}</small>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col beer-row__image">
+                <img src="/img/upload/{{ beer.image }}"/>
+            </div>
+            <div class="col beer-row__info">
+                {{ beer.shortDescription }}
+            </div>
+            <div class="col beer-row__buttons text-end">
+                <div class="row">
+                    <div class="col">
+                        <b>Prijs</b>: {{ beer.price }} munten
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b>ABV</b>: {{ beer.abv }}%
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <b>Voorradig</b>: {% if beer.inStock == true %}Ja{% else %}Nee{% endif %}
+                    </div>
+                </div>
+                {% if is_granted('ROLE_USER') %}
+                    <form method="post" class="form-handler" action="/service/admin/beer/toggle-stock">
+                        <input type="hidden" name="id" id="id" value="{{ beer.id }}">
+                        <button type="submit" class="btn btn-warning">
+                            {% if beer.inStock == true %}
+                                Helemaal op!
+                            {% else %}
+                                Hij is weer voorradig
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="/admin/beer/{{ beer.id }}" class="btn btn-success">Wijzigen</a>
+                    <form method="post" class="form-handler" action="/service/admin/beer/delete">
+                        <input type="hidden" name="id" id="id" value="{{ beer.id }}">
+                        <button type="submit" class="btn btn-danger">
+                            Verwijderen
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if beer.longDescription|length > 0 %}
+                    <a href="/bier/{{ beer.slug }}" class="btn btn-danger">Meer info</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}

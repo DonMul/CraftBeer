@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% import _self as macros %}
+
+{% block body %}
+    <h2 class="text-center">
+        {{ beer.name }}
+    </h2>
+    <h3 class="text-center"><small>{{ beer.brand.name }}</small></h3>
+    <a href="/" class="btn btn-danger">< Terug</a>
+    <hr/>
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col-2">
+                    <img src="/img/{{ beer.image }}" style=" max-width: 100%"/>
+                </div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col">
+                            <b>Prijs</b>
+                        </div>
+                        <div class="col">
+                            {{ beer.price }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <b>ABV</b>
+                        </div>
+                        <div class="col">
+                            {{ beer.abv }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <b>Op voorraad</b>
+                        </div>
+                        <div class="col">
+                            {% if beer.inStock == true %}
+                                Ja
+                            {% else %}
+                                Nee
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr/>
+                    <b>Korte omschrijving</b>
+                    <br/>
+                    {{ beer.shortDescription }}
+                    <br/>
+                    <br/>
+                    <b>Lange omschrijving</b>
+                    <br/>
+                    {{ beer.longDescription }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% import 'main.html.twig' as macros %}
+
+{% block body %}
+    <h2 class="text-center">
+        StudioGonz Speciaalbierbar Admin
+    </h2>
+
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-danger btn-block" href="/logout">Uitloggen</a>
+        </div>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="col">
+                <a class="btn btn-success btn-block" href="/admin/beer/0">Nieuw bier toevoegen</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-success btn-block" href="/admin/categories">Categorie&euml;n</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-success btn-block" href="/admin/users">Gebruikers</a>
+            </div>
+        {% endif %}
+        <div class="col">
+            <a class="btn btn-warning btn-block" href="/admin/change-password">Wachtwoord wijzigen</a>
+        </div>
+    </div>
+    <hr/>
+    {% if beers|length <= 0 %}
+        <div class="alert alert-warning" role="alert">
+            Er zijn geen biertjes toegevoegd
+        </div>
+    {% endif %}
+
+    {% for beer in beers %}
+        {{ macros.beer(beer) }}
+    {% endfor %}
+
+{% endblock %}
