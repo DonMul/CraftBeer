@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2 class="text-center">
+        Categorie&euml;n
+    </h2>
+    <a href="/admin" class="btn btn-primary">< Terug</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Categorie</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <form method="post" action="/service/admin/category/edit" class="form-handler">
+                    <input type="hidden" value="{{ category.id }}" name="id"/>
+                    <td>
+                        <input type="text" value="{{ category.name }}" name="name" id="name" class="form-control">
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-warning">
+                            Naam wijzigen
+                        </button>
+                    </td>
+                </form>
+                <td>
+                    <form method="post" action="/service/admin/category/delete" class="form-handler">
+                        <input type="hidden" name="id" value="{{ category.id }}"/>
+                        <button type="submit" class="btn btn-danger">
+                            Verwijderen
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Nieuwe categorie</h3>
+    <form method="post" action="/service/admin/category/add" class="form-handler">
+    <div class="row">
+        <div class="col">
+            <label class="form-label" for="name">Naam</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-success">
+                Opslaan
+            </button>
+        </div>
+    </div>
+    </form>
+{% endblock %}

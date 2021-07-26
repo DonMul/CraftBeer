@@ -1,0 +1,59 @@
+body {
+    background-color: #e72027
+}
+
+.container {
+    background-color: white;
+}
+
+#mainContainer {
+    min-height: 100vh;
+    margin-top: 12px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-top: 12px;
+}
+
+#headerContainer {
+    margin-bottom: 12px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#headerImage {
+    max-width: 100%;
+}
+
+.beer-row {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid black;
+}
+
+.beer-row__image img {
+    max-height: 30vh;
+    max-width: 100%;
+}
+
+.btn-danger {
+    background-color: #e72027;
+    border-color: #e72027;
+}
+
+.hidden {
+    display: none;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.beer-row__name,
+.beer-row__brand {
+    font-weight: bold;
+}
+
+#noneFound {
+    margin-top: 12px;
+}

@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2 class="text-center">
+        Gebruikers
+    </h2>
+
+    <a href="/admin" class="btn btn-primary">< Terug</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Gebruikersnaam</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>
+                    {{ user.username }}
+                </td>
+                <td>
+                    {% if 'ROLE_USER' in user.roles %}
+                        <form method="post" action="/service/admin/user/remove-role" class="form-handler">
+                            <input type="hidden" name="userId" value="{{ user.id }}"/>
+                            <input type="hidden" name="role" value="ROLE_USER"/>
+                            <button type="submit" class="btn btn-warning">
+                                Medewerkerstoegang ontzeggen
+                            </button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="/service/admin/user/enable-role" class="form-handler">
+                            <input type="hidden" name="userId" value="{{ user.id }}"/>
+                            <input type="hidden" name="role" value="ROLE_USER"/>
+                            <button type="submit" class="btn btn-success">
+                                Medewerkerstoegang verlenen
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if 'ROLE_ADMIN' in user.roles %}
+                        <form method="post" action="/service/admin/user/remove-role" class="form-handler">
+                            <input type="hidden" name="userId" value="{{ user.id }}"/>
+                            <input type="hidden" name="role" value="ROLE_ADMIN"/>
+                            <button type="submit" class="btn btn-warning">
+                                Admin-rechten ontzeggen
+                            </button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="/service/admin/user/enable-role" class="form-handler">
+                            <input type="hidden" name="userId" value="{{ user.id }}"/>
+                            <input type="hidden" name="role" value="ROLE_ADMIN"/>
+                            <button type="submit" class="btn btn-success">
+                                Admin-rechten verlenen
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="post" action="/service/admin/user/delete" class="form-handler">
+                        <input type="hidden" name="id" value="{{ user.id }}"/>
+                        <button type="submit" class="btn btn-danger">
+                            Verwijderen
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

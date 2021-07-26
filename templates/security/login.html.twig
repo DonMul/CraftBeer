@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="panel-header">
+        <div class="container">
+            <h1 class="text-center">Inloggen</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card card-offset">
+            <div class="card-body">
+                <form method="post" action="{{ path('app_login', {'_locale': app.request.locale}) }}">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            Je bent al ingelogd als: {{ app.user.username }}, <a href="{{ path('app_logout') }}"> Uitloggen</a>
+                        </div>
+                    {% endif %}
+
+                    <label for="inputUsername">
+                        Gebruikersnaam
+                    </label>
+                    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus>
+                    <label for="inputPassword">
+                        Wachtwoord
+                    </label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" required>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Onthoud mij
+                        </label>
+                    </div>
+
+                    <button class="btn btn-success" type="submit">
+                        Inloggen
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

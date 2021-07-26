@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="panel-header">
+        <div class="container">
+            <h1 class="text-center">Registreren</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card card-offset">
+            <div class="card-body">
+                {{ form_start(registrationForm, {'attr': {'class': 'form-handler'}}) }}
+                {{ form_row(registrationForm.username, { 'attr': {'class': 'form-control'}, 'label': 'Gebruikersnaam', 'translation_domain': 'object' }) }}
+                {{ form_row(registrationForm.plainPassword, { 'attr': {'class': 'form-control'}, 'label': 'Wachtwoord', 'translation_domain': 'object' }) }}
+
+                <button class="btn btn-success">
+                    {{ 'Registreer'|trans([], 'button') }}
+                </button>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
